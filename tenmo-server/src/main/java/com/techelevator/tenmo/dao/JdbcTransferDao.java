@@ -18,18 +18,19 @@ public class JdbcTransferDao implements TransferDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void createTransfer(Transfer transfer) {
+    public int createTransfer(Transfer transfer) {
         String sql = "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                      "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id;";
         int transferId = jdbcTemplate.queryForObject(sql, int.class, transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getAmount());
+        return transferId;
     }
 
     public List<Transfer> getTransfersByUserId(int userId) {
         List<Transfer> transfers = new ArrayList<>();
         String sql = "SELECT transfer.transfer_id, transfer.transfer_type_id, transfer.transfer_status_id, transfer.account_from, transfer.account_to, transfer.amount " +
                      "FROM transfer " +
-                     "JOIN account f ON transfer.account_from = account.account_id " +
-                     "JOIN account t ON transfer.account_to = account.account_id " +
+                     "JOIN account f ON transfer.account_from = f.account_id " +
+                     "JOIN account t ON transfer.account_to = t.account_id " +
                      "WHERE t.user_id = ? OR f.user_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId);
         while(results.next()) {
@@ -54,6 +55,7 @@ public class JdbcTransferDao implements TransferDao {
 
     private Transfer mapRowToTransfer(SqlRowSet results) {
         Transfer transfer = new Transfer();
+        transfer.setTransferId(results.getInt("transfer_id"));
         transfer.setTransferTypeId(results.getInt("transfer_type_id"));
         transfer.setTransferStatusId(results.getInt("transfer_status_id"));
         transfer.setAccountFromId(results.getInt("account_from"));

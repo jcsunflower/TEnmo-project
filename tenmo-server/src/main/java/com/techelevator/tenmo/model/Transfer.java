@@ -27,6 +27,10 @@ public class Transfer {
         return transferId;
     }
 
+    public void setTransferId(int transferId) {
+        this.transferId = transferId;
+    }
+
     public BigDecimal getAmount() {
         return amount;
     }

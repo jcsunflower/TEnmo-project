@@ -8,7 +8,7 @@ public interface TransferDao {
 
     List<Transfer> getTransfersByUserId(int userId);
 
-    void createTransfer(Transfer transfer);
+    int createTransfer(Transfer transfer);
 
     String getTransferType(int transferId);
 

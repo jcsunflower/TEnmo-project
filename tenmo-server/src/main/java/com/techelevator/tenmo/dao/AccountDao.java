@@ -7,6 +7,8 @@ public interface AccountDao {
 
     Account getAccountByUserId(int userId);
 
+    int getUserIdByAccountId(int accountId);
+
     BigDecimal getBalance(int userId);
 
     void addToBalance(BigDecimal deposit, int userId);
