@@ -12,6 +12,8 @@ public class Account {
     private int userId;
     private BigDecimal balance = INITIAL_BALANCE;
 
+// add a constructor that takes all three inputs, and a blank constructor
+
     //Getters and Setters
     public int getAccountId() {
         return this.accountId;

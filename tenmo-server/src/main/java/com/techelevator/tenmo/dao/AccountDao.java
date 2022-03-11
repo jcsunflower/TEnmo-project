@@ -5,6 +5,11 @@ import java.security.Principal;
 
 public interface AccountDao {
 
+    /* ADD
+    public Account getAccountByUserId(int userId)
+    private Account mapRowToAccount(SqlRowSet result)
+     */
+
     BigDecimal getBalance(int userID, Principal principal);
 
     void addToBalance(BigDecimal deposit, int userID, Principal principal);

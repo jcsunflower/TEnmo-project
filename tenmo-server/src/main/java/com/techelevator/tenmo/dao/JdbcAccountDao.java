@@ -14,6 +14,28 @@ public class JdbcAccountDao implements AccountDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /* should add a method to getAccountByUserId
+    public Account getAccountByUserId(int userId) {
+        String sql = "SELECT account_id, user_id, balance FROM accounts WHERE user_id = ?;";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userId);
+        Account account = null;
+        if(result.next()) {
+            account = mapRowTo account(result);
+        }
+        return account;
+
+     */
+    /* need a mapRowToAccount
+      private Account mapRowToAccount(SqlRowSet result) {
+        int accountId = result.getInt("account_id");
+        int userId = result.getInt("user_id");
+        String balanceString = result.getString("balance");
+        BigDecimal balance = BigDecimal.valueOf(Double.valueOf(balanceString));
+        return new Account(accountId, userId, balance);
+
+     */
+
+// might not need principal for these
 
     @Override
     public BigDecimal getBalance(int userID, Principal principal) {
