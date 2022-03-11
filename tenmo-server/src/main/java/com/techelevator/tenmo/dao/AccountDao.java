@@ -1,19 +1,16 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Account;
 import java.math.BigDecimal;
-import java.security.Principal;
 
 public interface AccountDao {
 
-    /* ADD
-    public Account getAccountByUserId(int userId)
-    private Account mapRowToAccount(SqlRowSet result)
-     */
+    Account getAccountByUserId(int userId);
 
-    BigDecimal getBalance(int userID, Principal principal);
+    BigDecimal getBalance(int userId);
 
-    void addToBalance(BigDecimal deposit, int userID, Principal principal);
+    void addToBalance(BigDecimal deposit, int userId);
 
-    void subtractFromBalance(BigDecimal withdrawal, int userID, Principal principal);
+    void subtractFromBalance(BigDecimal withdrawal, int userId);
 
 }

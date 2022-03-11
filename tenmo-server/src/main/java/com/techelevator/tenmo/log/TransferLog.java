@@ -1,14 +1,33 @@
 package com.techelevator.tenmo.log;
 
+import com.techelevator.tenmo.dao.TransferDao;
+import com.techelevator.tenmo.model.Transfer;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 public class TransferLog {
-    /*
+
     private File log = new File("TransferLog.txt");
 
     TransferDao transferDao;
 
-    PrintWriter logPrint = new PrintWriter(new FileOutputStream(log, true));
+    PrintWriter logPrint;
 
-    public TransferLog() throws FileNotFoundException {
+    {
+        try {
+            logPrint = new PrintWriter(new FileOutputStream(log, true));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public TransferLog() {
     }
 
     public String dateTime() {
@@ -28,5 +47,5 @@ public class TransferLog {
        logPrint.println(lineToPrint);
        logPrint.flush();
     }
-     */
+
 }
