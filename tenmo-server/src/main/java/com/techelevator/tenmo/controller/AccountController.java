@@ -67,20 +67,31 @@ public class AccountController {
     // POST methods
 
     // create a transfer
-    @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "/transfers/{id}", method = RequestMethod.POST)
-    public void addTransfer(@Valid @RequestBody Transfer transfer, @PathVariable("id") int transferId, Principal principal) {
-        TransferLog transferLog = new TransferLog();
-        Account accountFrom = accountDao.getAccountByUserId(transfer.getAccountFromId());
-        Account accountTo = accountDao.getAccountByUserId(transfer.getAccountToId());
-        BigDecimal amount = transfer.getAmount();
+//    @ResponseStatus(HttpStatus.CREATED)
+//    @RequestMapping(path = "/transfers/{id}", method = RequestMethod.POST)
+//    public void addTransfer(@Valid @RequestBody Transfer transfer, @PathVariable("id") int transferId, Principal principal) {
+//        TransferLog transferLog = new TransferLog();
+//        Account accountFrom = accountDao.getAccountByUserId(transfer.getAccountFromId());
+//        Account accountTo = accountDao.getAccountByUserId(transfer.getAccountToId());
+//        BigDecimal amount = transfer.getAmount();
+//
+//        // check available amount
+//        if (accountFrom.getBalance().compareTo(amount) >= 0) {
+//            transferDao.createTransfer(transfer);
+//            accountDao.subtractFromBalance(amount, accountFrom.getUserId());
+//            accountDao.addToBalance(amount, accountTo.getUserId());
+//            transferLog.printTransferToLog(transfer);
+//        }
 
-        // check available amount
-        if (accountFrom.getBalance().compareTo(amount) >= 0) {
-            transferDao.createTransfer(transfer);
-            accountDao.subtractFromBalance(amount, accountFrom.getUserId());
-            accountDao.addToBalance(amount, accountTo.getUserId());
-            transferLog.printTransferToLog(transfer);
+    @RequestMapping(path = "transfer/send", method = RequestMethod.POST)
+    public void transferFromAccount(@Valid @RequestParam BigDecimal amount, @RequestParam String username, Principal principal) {
+        TransferLog transferLog = new TransferLog();
+        int receiverId = userDao.findIdByUsername(username);
+        int senderId = userDao.findIdByUsername(principal.getName());
+
+        if (amount.compareTo(accountDao.getBalance(senderId)) <= 0) {
+            accountDao.subtractFromBalance(amount, senderId);
+            accountDao.addToBalance(amount, receiverId);
         }
     }
 

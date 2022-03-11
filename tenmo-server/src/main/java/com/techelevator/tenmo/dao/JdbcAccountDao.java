@@ -50,11 +50,13 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public void subtractFromBalance(BigDecimal withdrawal, int userId) {
-        String sql = "UPDATE account " +
-                "SET balance = ? " +
-                "WHERE user_id = ?;";
-        BigDecimal newBalance = getBalance(userId).subtract(withdrawal);
-        jdbcTemplate.update(sql, newBalance, userId);
+        if (withdrawal.compareTo(getBalance(userId)) <= 0) {
+            String sql = "UPDATE account " +
+                    "SET balance = ? " +
+                    "WHERE user_id = ?;";
+            BigDecimal newBalance = getBalance(userId).subtract(withdrawal);
+            jdbcTemplate.update(sql, newBalance, userId);
+        }
     }
 
     private Account mapRowToAccount(SqlRowSet result) {
