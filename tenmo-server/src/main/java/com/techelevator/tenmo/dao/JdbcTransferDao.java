@@ -25,18 +25,19 @@ public class JdbcTransferDao implements TransferDao {
         return transferId;
     }
 
-    public List<Transfer> getTransfersByUserId(int userId) {
+    public Transfer[] getTransfersByUserId(int userId) {
         List<Transfer> transfers = new ArrayList<>();
-        String sql = "SELECT transfer.transfer_id, transfer.transfer_type_id, transfer.transfer_status_id, transfer.account_from, transfer.account_to, transfer.amount " +
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
                      "FROM transfer " +
-                     "JOIN account f ON transfer.account_from = f.account_id " +
-                     "JOIN account t ON transfer.account_to = t.account_id " +
+                     "JOIN account AS f ON transfer.account_from = f.account_id " +
+                     "JOIN account AS t ON transfer.account_to = t.account_id " +
                      "WHERE t.user_id = ? OR f.user_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId);
         while(results.next()) {
             transfers.add(mapRowToTransfer(results));
         }
-        return transfers;
+        Transfer[] array = new Transfer[transfers.size()];
+        return transfers.toArray(array);
     }
 
     public String getTransferType(int transferId) {

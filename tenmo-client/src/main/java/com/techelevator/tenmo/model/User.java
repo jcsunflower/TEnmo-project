@@ -31,4 +31,10 @@ public class User {
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        String userId = id.toString();
+        return userId + "          " + username;
+    }
 }

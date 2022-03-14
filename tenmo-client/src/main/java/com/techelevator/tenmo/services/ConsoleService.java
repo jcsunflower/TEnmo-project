@@ -57,6 +57,18 @@ public class ConsoleService {
         return scanner.nextLine();
     }
 
+    public double promptForDouble(String prompt) {
+        System.out.println(prompt);
+        while (true) {
+            try {
+                return Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a dollar amount.");
+            }
+        }
+    }
+
+
     public int promptForInt(String prompt) {
         System.out.print(prompt);
         while (true) {

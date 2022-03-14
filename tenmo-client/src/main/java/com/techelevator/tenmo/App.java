@@ -2,13 +2,16 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TransferService;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Scanner;
 
 public class App {
 
@@ -65,6 +68,7 @@ public class App {
         String token = currentUser.getToken();
         if (currentUser != null) {
             accountService.setAuthToken(token);
+            transferService.setAuthToken(token);
         } else {
             consoleService.printErrorMessage();
         }
@@ -100,14 +104,16 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
+
         Transfer[] transfers = transferService.getPastTransfers();
 
         if (transfers != null) {
+            System.out.println("   Transfers:   ");
+            System.out.println("------------------");
             for (int i = 0; i < transfers.length; i++) {
                 System.out.println(transfers[i].toString());
             }
-        }
-        else {
+        } else {
             System.out.println("Unable to display past transfers or no past transfers");
         }
 	}
@@ -118,8 +124,28 @@ public class App {
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-		
+		// list users to chose form
+        List<User> users = accountService.getAllUsers();
+        System.out.println("user ID:  name:");
+        System.out.println("------------------------------");
+        for (User user : users) {
+            System.out.println(user.toString());
+        }
+        boolean match = false;
+        int id = 0;
+        while (!match) {
+            int toId = consoleService.promptForInt("Enter user ID to send bucks to.");
+            for (User user : users) {
+                if (user.getId() == toId) {
+                    id = toId;
+                    match = true;
+                    break;
+                }
+            }
+        }
+        double userAmount = consoleService.promptForDouble("Enter a dollar amount to send.");
+        BigDecimal amount = BigDecimal.valueOf(userAmount);
+        transferService.send(amount, id);
 	}
 
 	private void requestBucks() {

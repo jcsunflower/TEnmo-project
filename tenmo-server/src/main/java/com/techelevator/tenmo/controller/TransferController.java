@@ -30,24 +30,24 @@ public class TransferController {
 
     // get all transfers by principal
     @RequestMapping(method = RequestMethod.GET)
-    public List<Transfer> getTransfersByPrincipal(@Valid Principal principal) {
+    public Transfer[] getTransfersByPrincipal(@Valid Principal principal) {
         int userId = userDao.findIdByUsername(principal.getName());
         return transferDao.getTransfersByUserId(userId);
     }
 
     //get all transfers by user id
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public List<Transfer> getTransfersByUserId(@Valid @PathVariable int id) {
+    public Transfer[] getTransfersByUserId(@Valid @PathVariable int id) {
         return transferDao.getTransfersByUserId(id);
     }
 
     @RequestMapping(path = "/send", method = RequestMethod.POST)
-    public void transferFromAccount(@Valid @RequestParam BigDecimal amount, @RequestParam String username, Principal principal) {
+    public void transferFromAccount(@Valid @RequestParam BigDecimal amount, @RequestParam int id, Principal principal) {
         TransferLog transferLog = new TransferLog();
-        int receiverId = userDao.findIdByUsername(username);
+        int receiverId = id;
         int senderId = userDao.findIdByUsername(principal.getName());
         if (amount.compareTo(BigDecimal.ZERO) >= 0) {
-            if (!username.equals(principal.getName())) {
+            if (receiverId != senderId) {
                 if (amount.compareTo(accountDao.getBalance(senderId)) <= 0) {
                     accountDao.subtractFromBalance(amount, senderId);
                     accountDao.addToBalance(amount, receiverId);
@@ -56,20 +56,20 @@ public class TransferController {
                     transfer.setTransferTypeId(2);
                     transfer.setTransferStatusId(2);
                     transfer.setAccountFromId(accountDao.getAccountByUserId(userDao.findIdByUsername(principal.getName())).getAccountId());
-                    transfer.setAccountToId(accountDao.getAccountByUserId(userDao.findIdByUsername(username)).getAccountId());
+                    transfer.setAccountToId(accountDao.getAccountByUserId(receiverId).getAccountId());
                     int newId = transferDao.createTransfer(transfer);
                     transfer.setTransferId(newId);
-                    transferLog.printTransferToLog(transfer, userDao.findIdByUsername(principal.getName()), userDao.findIdByUsername(username));
+                    transferLog.printTransferToLog(transfer, userDao.findIdByUsername(principal.getName()), receiverId);
                 } else {
                     Transfer failedTransfer = new Transfer();
                     failedTransfer.setAmount(amount);
                     failedTransfer.setTransferTypeId(2);
                     failedTransfer.setTransferStatusId(3);
                     failedTransfer.setAccountFromId(accountDao.getAccountByUserId(userDao.findIdByUsername(principal.getName())).getAccountId());
-                    failedTransfer.setAccountToId(accountDao.getAccountByUserId(userDao.findIdByUsername(username)).getAccountId());
+                    failedTransfer.setAccountToId(accountDao.getAccountByUserId(receiverId).getAccountId());
                     int newId = transferDao.createTransfer(failedTransfer);
                     failedTransfer.setTransferId(newId);
-                    transferLog.printTransferToLog(failedTransfer, userDao.findIdByUsername(principal.getName()), userDao.findIdByUsername(username));
+                    transferLog.printTransferToLog(failedTransfer, userDao.findIdByUsername(principal.getName()), receiverId);
                 }
             } else {
                 System.out.println("Cannot send money to self.");
