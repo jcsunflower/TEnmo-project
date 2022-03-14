@@ -42,7 +42,7 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/send", method = RequestMethod.POST)
-    public void transferFromAccount(@Valid @RequestParam BigDecimal amount, @RequestParam int id, Principal principal) {
+    public void transferFromAccount(@Valid @RequestParam BigDecimal amount, @Valid @RequestParam int id, Principal principal) {
         TransferLog transferLog = new TransferLog();
         int receiverId = id;
         int senderId = userDao.findIdByUsername(principal.getName());

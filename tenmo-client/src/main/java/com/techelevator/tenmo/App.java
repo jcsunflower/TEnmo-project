@@ -99,7 +99,7 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-        System.out.println(accountService.getBalance());
+        System.out.println("Your current account balance is: " + accountService.getBalance());
 		
 	}
 
@@ -111,7 +111,8 @@ public class App {
             System.out.println("   Transfers:   ");
             System.out.println("------------------");
             for (int i = 0; i < transfers.length; i++) {
-                System.out.println(transfers[i].toString());
+                System.out.println(transfers[i].toString()
+                );
             }
         } else {
             System.out.println("Unable to display past transfers or no past transfers");

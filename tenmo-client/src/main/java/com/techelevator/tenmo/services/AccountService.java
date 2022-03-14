@@ -38,6 +38,19 @@ public class AccountService {
         return balance;
     }
 
+    public String getUsernameById(int id) {
+        String username = "";
+
+        try {
+            ResponseEntity<String> response =
+                    restTemplate.exchange(API_BASE_URL + "/users/" + id, HttpMethod.GET, makeAuthEntity(), String.class);
+            username = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return username;
+    }
+
 
     //Maybe private?
     public List<User> getAllUsers() {
